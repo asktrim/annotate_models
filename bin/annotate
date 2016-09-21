@@ -108,6 +108,11 @@ OptionParser.new do |opts|
     ENV['show_foreign_keys'] = 'yes'
   end
 
+  opts.on('-k', '--show-foreign-key-names',
+          "When showing foreign keys, show the full database name. If false, only show columns and constraints.") do
+    ENV['show_foreign_key_names'] = 'yes'
+  end
+
   opts.on('-i', '--show-indexes',
           "List the table's database indexes in the annotation") do
     ENV['show_indexes'] = 'yes'

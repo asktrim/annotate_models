@@ -14,6 +14,7 @@ if Rails.env.development?
       'position_in_factory'       => 'before',
       'position_in_serializer'    => 'before',
       'show_foreign_keys'         => 'true',
+      'show_foreign_key_names'    => 'true',
       'show_indexes'              => 'true',
       'simple_indexes'            => 'false',
       'model_dir'                 => 'app/models',

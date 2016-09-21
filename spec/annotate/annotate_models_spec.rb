@@ -189,7 +189,7 @@ EOS
                                   'foreign_things'
                                 )
                               ])
-            expect(AnnotateModels.get_schema_info(klass, "Schema Info", :show_foreign_keys => true)).to eql(<<-EOS)
+            expect(AnnotateModels.get_schema_info(klass, "Schema Info", :show_foreign_keys => true, :show_foreign_key_names => true)).to eql(<<-EOS)
 # Schema Info
 #
 # Table name: users
@@ -219,7 +219,7 @@ EOS
                            on_update: 'on_update_value'
                          )
                        ])
-    expect(AnnotateModels.get_schema_info(klass, "Schema Info", :show_foreign_keys => true)).to eql(<<-EOS)
+    expect(AnnotateModels.get_schema_info(klass, "Schema Info", :show_foreign_keys => true, :show_foreign_key_names => true)).to eql(<<-EOS)
 # Schema Info
 #
 # Table name: users
@@ -230,6 +230,33 @@ EOS
 # Foreign Keys
 #
 #  fk_rails_02e851e3b7  (foreign_thing_id => foreign_things.id) ON DELETE => on_delete_value ON UPDATE => on_update_value
+#
+EOS
+  end
+
+  it "should get foreign key info without foreign key names if specified" do
+           klass = mock_class(:users, :id, [
+              mock_column(:id, :integer),
+              mock_column(:foreign_thing_id, :integer),
+            ],
+                              [
+                                mock_foreign_key(
+                                  'fk_rails_02e851e3b7',
+                                  'foreign_thing_id',
+                                  'foreign_things'
+                                )
+                              ])
+            expect(AnnotateModels.get_schema_info(klass, "Schema Info", :show_foreign_keys => true, :show_foreign_key_names => false)).to eql(<<-EOS)
+# Schema Info
+#
+# Table name: users
+#
+#  id               :integer          not null, primary key
+#  foreign_thing_id :integer          not null
+#
+# Foreign Keys
+#
+#   (foreign_thing_id => foreign_things.id)
 #
 EOS
   end
