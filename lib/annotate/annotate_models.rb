@@ -357,12 +357,16 @@ module AnnotateModels
 
       if options[:show_foreign_key_names]
         max_size = foreign_keys.collect{|fk| fk.name.size}.max + 1
+        sorted_foreign_keys = foreign_keys.sort_by(&:name)
       else
         max_size = 0
+        # Sort by the foreign key ref string ("column => other_table.other_column") for consistent
+        # sort order.
+        sorted_foreign_keys = foreign_keys.sort_by { |fk| get_foreign_key_ref_info(fk) }
       end
 
-      foreign_keys.sort_by(&:name).each do |fk|
-        ref_info = "#{fk.column} => #{fk.to_table}.#{fk.primary_key}"
+      sorted_foreign_keys.each do |fk|
+        ref_info = get_foreign_key_ref_info(fk)
         constraints_info = ''
         constraints_info += "ON DELETE => #{fk.on_delete} " if fk.on_delete
         constraints_info += "ON UPDATE => #{fk.on_update} " if fk.on_update
@@ -382,6 +386,10 @@ module AnnotateModels
       end
 
       fk_info
+    end
+
+    def get_foreign_key_ref_info(foreign_key)
+      "#{foreign_key.column} => #{foreign_key.to_table}.#{foreign_key.primary_key}"
     end
 
     # Add a schema block to a file. If the file already contains

@@ -238,25 +238,35 @@ EOS
            klass = mock_class(:users, :id, [
               mock_column(:id, :integer),
               mock_column(:foreign_thing_id, :integer),
+              mock_column(:other_foreign_thing_id, :integer)
             ],
                               [
+                                mock_foreign_key(
+                                  'fk_rails_00deadbeef',
+                                  'other_foreign_thing_id',
+                                  'other_foreign_things'
+                                ),
                                 mock_foreign_key(
                                   'fk_rails_02e851e3b7',
                                   'foreign_thing_id',
                                   'foreign_things'
                                 )
                               ])
+            # The foreign key on other_foreign_thing_id should be listed second, even though it's listed first
+            # and sorts first by name, because in this case we sort by foreign key ref string.
             expect(AnnotateModels.get_schema_info(klass, "Schema Info", :show_foreign_keys => true, :show_foreign_key_names => false)).to eql(<<-EOS)
 # Schema Info
 #
 # Table name: users
 #
-#  id               :integer          not null, primary key
-#  foreign_thing_id :integer          not null
+#  id                     :integer          not null, primary key
+#  foreign_thing_id       :integer          not null
+#  other_foreign_thing_id :integer          not null
 #
 # Foreign Keys
 #
 #   (foreign_thing_id => foreign_things.id)
+#   (other_foreign_thing_id => other_foreign_things.id)
 #
 EOS
   end
