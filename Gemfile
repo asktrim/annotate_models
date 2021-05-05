@@ -27,6 +27,7 @@ group :development, :test do
 end
 
 group :test do
-  gem 'wrong', require: false
+  gem 'bigdecimal', '1.3.5'
   gem 'files', require: false
+  gem 'wrong', require: false
 end
